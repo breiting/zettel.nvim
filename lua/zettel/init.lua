@@ -95,7 +95,7 @@ end
 local function generate_id()
 	math.randomseed(os.time())
 	local date = os.date("%Y-%m-%d")
-	local random = tostring(math.random(10000000, 99999999))
+	local random = string.format("%03d", math.random(0, 999))
 	return date .. "-" .. random
 end
 
