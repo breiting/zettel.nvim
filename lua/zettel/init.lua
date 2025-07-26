@@ -74,6 +74,7 @@ function M.insert_link_titles()
 						value = entry.filename,               -- ID als Link
 						display = entry.title .. " (" .. entry.filename .. ")", -- Titel anzeigen
 						ordinal = entry.title .. " " .. entry.filename,
+						title = entry.title,
 					}
 				end,
 			}),
@@ -83,7 +84,7 @@ function M.insert_link_titles()
 					local selection = action_state.get_selected_entry()
 					actions.close(prompt_bufnr)
 					-- Füge [[ID]] ein
-					vim.api.nvim_put({ "[[" .. selection.value .. "]]" }, "c", true, true)
+					vim.api.nvim_put({ "[[" .. selection.value .. "|" .. selection.title .. "]]" }, "c", true, true)
 				end)
 				return true
 			end,
@@ -112,7 +113,7 @@ function M.new_note()
 		local title = title_input and vim.trim(title_input) or "Untitled"
 
 		-- Schritt 2: Typ-Auswahl
-		local types = { "note", "capture", "journal", "meeting" }
+		local types = { "note", "capture", "journal", "meeting", "meta" }
 		vim.ui.select(types, { prompt = "Note Type:" }, function(choice)
 			local tag = choice or "note"
 
