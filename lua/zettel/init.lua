@@ -12,9 +12,17 @@ M.config = {
 	use_date_prefix = true,
 }
 
+-- Make sure to resolve any symlinks
+local function resolve_symlink(path)
+	return vim.fn.resolve(vim.fn.expand(path))
+end
+
 -- Setup function (user config)
 function M.setup(opts)
 	M.config = vim.tbl_extend("force", M.config, opts or {})
+
+	-- Resolve any symbolic links
+	M.config.vault_dir = resolve_symlink(M.config.vault_dir)
 end
 
 -- Read note title from frontmatter
@@ -145,6 +153,58 @@ function M.new_note()
 	end)
 end
 
+-- Make new note from selection
+function M.extract_to_new_note()
+	-- Get current selection
+	local start_pos = vim.fn.getpos("'<")
+	local end_pos = vim.fn.getpos("'>")
+	local lines = vim.fn.getline(start_pos[2], end_pos[2])
+	local selection
+
+	if #lines == 1 then
+		selection = string.sub(lines[1], start_pos[3], end_pos[3])
+	else
+		selection = table.concat(lines, "\n") -- Multi-Line (selten für Titel)
+	end
+
+	local title = vim.trim(selection)
+
+	-- Neue Note erzeugen
+	local vault_dir = vim.fn.expand(M.config.vault_dir)
+	vim.fn.mkdir(vault_dir, "p")
+
+	local id = generate_id()
+	local filename = id .. ".md"
+	local filepath = vault_dir .. "/" .. filename
+
+	-- Frontmatter + Heading
+	local template = {
+		"---",
+		"id: " .. id,
+		"title: " .. title,
+		"tags: [note]",
+		"---",
+		"",
+		"# " .. title,
+		"",
+		"",
+	}
+
+	-- Datei schreiben
+	if vim.fn.filereadable(filepath) == 0 then
+		vim.cmd("edit " .. filepath)
+		vim.api.nvim_buf_set_lines(0, 0, -1, false, template)
+		vim.cmd("write")
+	end
+
+	-- Zurück zum Original-Buffer
+	vim.cmd("b#")
+
+	-- Ersetze Selektion mit [[id|title]]
+	local link_text = string.format("[[%s|%s]]", id, title)
+	vim.api.nvim_buf_set_text(0, start_pos[2] - 1, start_pos[3] - 1, end_pos[2] - 1, end_pos[3], { link_text })
+end
+
 -- Extracts the link under cursor between [[ and ]]
 local function get_link_under_cursor()
 	local line = vim.api.nvim_get_current_line()
@@ -198,10 +258,70 @@ function M.search_notes()
 	})
 end
 
+-- Search in titles
+function M.search_titles()
+	local vault_dir = vim.fn.expand(M.config.vault_dir)
+	local escaped_vault = vim.fn.shellescape(vault_dir)
+
+	-- Suche alle Titel im Vault
+	local cmd = 'rg --follow --no-heading --line-number "^title\\s*:" ' .. escaped_vault
+	local handle = io.popen(cmd)
+	if not handle then
+		vim.notify("Failed to run ripgrep", vim.log.levels.ERROR)
+		return
+	end
+
+	local results = {}
+
+	for line in handle:lines() do
+		-- Beispiel-Zeile: /path/to/file.md:2:title: My Title
+		local file, title = string.match(line, "^(.*):%d+:title:?%s*(.*)$")
+
+		if file and title and title ~= "" then
+			-- Sauberer Eintrag: Titel + Pfad
+			table.insert(results, {
+				value = file, -- Pfad zur Datei
+				display = title, -- Titel im Picker
+				ordinal = title .. " " .. file,
+			})
+		end
+	end
+	handle:close()
+
+	if #results == 0 then
+		vim.notify("No titles found. Check if your notes have 'title:' in frontmatter", vim.log.levels.WARN)
+		return
+	end
+
+	require("telescope.pickers")
+		.new({}, {
+			prompt_title = "Search Titles",
+			finder = require("telescope.finders").new_table({
+				results = results,
+				entry_maker = function(entry)
+					return entry
+				end,
+			}),
+			sorter = require("telescope.config").values.generic_sorter({}),
+			previewer = require("telescope.config").values.file_previewer({}),
+			attach_mappings = function(_, map)
+				map("i", "<CR>", function(bufnr)
+					local selection = require("telescope.actions.state").get_selected_entry()
+					require("telescope.actions").close(bufnr)
+					vim.cmd("edit " .. selection.value)
+				end)
+				return true
+			end,
+		})
+		:find()
+end
+
 -- Default Keymaps
 function M.keymaps()
-	vim.keymap.set("n", "<leader>nn", M.new_note, { desc = "New Zettel Note" })
-	vim.keymap.set("n", "<leader>sn", M.search_notes, { desc = "Search Notes in Vault" })
+	vim.keymap.set("n", "<leader>nn", M.new_note, { desc = "(N)ew zettel (N)ote" })
+	vim.keymap.set("n", "<leader>zf", M.search_notes, { desc = "(Z)ettel search (F)ull text" })
+	vim.keymap.set("n", "<leader>zt", M.search_titles, { desc = "(Z)ettel search note (T)itles" })
+	vim.keymap.set("v", "<leader>ze", M.extract_to_new_note, { desc = "(Z)ettel (E)xtract selection to new note" })
 end
 
 -- Autocmd: Initialize environment for vault
@@ -217,6 +337,13 @@ function M.autocmd()
 		end,
 	})
 end
+
+-- Commands
+vim.api.nvim_create_user_command("ZettelExtract", function()
+	M.extract_to_new_note()
+end, { range = true })
+vim.api.nvim_create_user_command("ZettelSearchTitle", M.search_titles, {})
+vim.api.nvim_create_user_command("ZettelSearchFull", M.search_notes, {})
 
 -- Initialization
 M.setup()
