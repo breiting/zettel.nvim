@@ -29,18 +29,6 @@ function M.setup(zettel)
 		desc = "Zettel: Search by tags",
 	})
 
-	vim.keymap.set("n", "<leader>zb", function()
-		zettel.links.show_backlinks()
-	end, {
-		desc = "Zettel: Show backlinks",
-	})
-
-	vim.keymap.set("n", "<leader>zv", function()
-		zettel.links.validate_links()
-	end, {
-		desc = "Zettel: Validate links in buffer",
-	})
-
 	-- Visual mode keymap for extracting selections
 	vim.keymap.set("v", "<leader>ze", zettel.extract_to_new_note, {
 		desc = "Zettel: Extract selection to new note",

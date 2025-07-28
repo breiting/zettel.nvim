@@ -66,18 +66,6 @@ function M.setup(zettel)
 		desc = "Follow the link under cursor",
 	})
 
-	vim.api.nvim_create_user_command("ZettelBacklinks", function()
-		zettel.links.show_backlinks()
-	end, {
-		desc = "Show backlinks to current note",
-	})
-
-	vim.api.nvim_create_user_command("ZettelValidateLinks", function()
-		zettel.links.validate_links()
-	end, {
-		desc = "Validate all links in current buffer",
-	})
-
 	-- Utility commands
 	vim.api.nvim_create_user_command("ZettelInfo", function()
 		local config = zettel.config.get()

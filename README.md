@@ -1,14 +1,12 @@
 # zettel.nvim
 
-A powerful neovim plugin for managing a simple and minimalistic personal knowledge management system with markdown files. It removes any friction, and concentrates on writing and navigating in your notes. No thinking about where to put your files, no thinking about how to name your files, the system keeps track, and the tools offer a simple interface.
+A powerful neovim plugin for managing a simple and minimalistic personal knowledge management (PKM) system with markdown files. It removes any friction, and concentrates on writing and navigating in your notes (similar to a Zettelkasten system). No thinking about where to put your files, no thinking about how to name your files, the system keeps track, and the tools offer a simple interface.
 
 ## Features
 
 - **Note Creation**: Create new notes with unique IDs and frontmatter
 - **Link Management**: Insert and follow wikilinks with `[[note-id|title]]` syntax
-- **Search**: Full-text search, title search, tag search, and date-based search
-- **Backlinks**: Find all notes that link to the current note
-- **Link Validation**: Check for broken links and create missing notes
+- **Search**: Full-text search, title search, tag search
 - **Extract Notes**: Convert selected text into new linked notes
 - **Recent Notes**: Quick access to recently modified notes
 
@@ -76,15 +74,12 @@ Global keymaps (available everywhere):
 - `<leader>zt` - Search note titles
 - `<leader>zr` - Show recent notes
 - `<leader>zg` - Search by tags (interactive)
-- `<leader>zb` - Show backlinks to current note
-- `<leader>zv` - Validate links in current buffer
 - `<leader>ze` - Extract selection to new note (visual mode)
 
 Buffer-local keymaps (in vault markdown files):
 
 - `gf` or `<CR>` - Follow link under cursor
 - `[[` - Insert link (opens Telescope picker)
-- `<leader>zl` - Insert link
 
 ### Commands
 
@@ -96,8 +91,6 @@ Buffer-local keymaps (in vault markdown files):
 - `:ZettelRecent [limit]` - Show recent notes
 - `:ZettelInsertLink` - Insert a link
 - `:ZettelFollowLink` - Follow link under cursor
-- `:ZettelBacklinks` - Show backlinks
-- `:ZettelValidateLinks` - Validate all links in buffer
 - `:ZettelInfo` - Show plugin information
 
 ### Note Format

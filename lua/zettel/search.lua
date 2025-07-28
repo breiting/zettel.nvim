@@ -15,11 +15,6 @@ local M = {}
 function M.search_notes()
 	local vault_dir = config.get_vault_dir()
 
-	if not utils.file_exists(vault_dir) then
-		vim.notify("Vault directory does not exist: " .. vault_dir, vim.log.levels.ERROR)
-		return
-	end
-
 	require("telescope.builtin").live_grep({
 		prompt_title = "Search Notes (Full Text)",
 		cwd = vault_dir,
