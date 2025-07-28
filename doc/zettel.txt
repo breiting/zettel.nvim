@@ -71,6 +71,10 @@ COMMANDS                                                         *zettel-command
 - `:ZettelSearchFull`  
   Full-text search in vault via Telescope.
 
+- `:ZettelCaptureImage`  
+  Captures a screenshot and stores the image in the assets folder (macos
+  only!)
+
 ==============================================================================
 KEYBINDINGS                                                    *zettel-keybindings*
 

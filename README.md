@@ -37,10 +37,11 @@ The core principles are simple:
 - Create new notes instantly from within neovim (<leader>nn or :ZettelNew)
 - Daily journal (<leader>zj or :ZettelJournal)
 - Insert wiki-style links with titles ([[id|Title]])
-- Follow links using `gf`
+- Follow links using `gf` (also supports preview images)
 - Search by title with Telescope (<leader>zt)
 - Full-text search with Telescope (<leader>zf)
 - Extract selection to new note (visual mode, <leader>ze)
+- Capture a screenshot and add the image to the note (MacOS only!)
 - Works seamlessly with Obsidian (supports [Front Matter Title plugin](https://github.com/snezhig/obsidian-front-matter-title))
 
 ## Installation
@@ -91,6 +92,9 @@ require("zettel").setup({
     -- Date format for ID generation [default]
     date_format = "%Y-%m-%d",
 
+    -- Asset directory (for images)
+    asset_dir = "_assets",
+
     -- Number of random digits in note IDs [default]
     id_random_digits = 3,
 })
@@ -132,6 +136,20 @@ or
 
 ```vim
 :ZettelSearchFull
+```
+
+### Capture a screenshot
+
+This feature is currently only supported on MacOS with `screencapture`.
+
+```vim
+:ZettelCaptureImage
+```
+
+or
+
+```vim
+<leader>zi
 ```
 
 ## Default Keymaps
@@ -177,14 +195,6 @@ Content goes here...
 
 You can link to other notes using [[2024-01-15-002|Another Note]].
 ```
-
-### Workflow Examples
-
-1. **Create a new note**: Press `<leader>nn`, enter title and select type
-2. **Link to another note**: Type `[[` and select from the picker
-3. **Follow a link**: Place cursor on a link and press `gf`
-4. **Extract text to note**: Select text and press `<leader>ze`
-5. **Search by topic**: Press `<leader>zg` to search by tags
 
 ## Architecture
 

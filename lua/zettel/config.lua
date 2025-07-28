@@ -7,6 +7,7 @@
 ---@type ZettelConfig
 local default_config = {
 	vault_dir = vim.fn.expand("~/zettel"),
+	assets_dir = "_assets",
 	note_types = { "note", "capture", "journal", "meeting", "meta" },
 	date_format = "%Y-%m-%d",
 	id_random_digits = 3,
@@ -44,6 +45,12 @@ end
 ---@return string vault_dir The vault directory path
 function M.get_vault_dir()
 	return config.vault_dir
+end
+
+---Get the assets directory path
+---@return string assets_dir The absolute directory path
+function M.get_assets_dir()
+	return config.vault_dir .. "/" .. config.assets_dir
 end
 
 ---Get available note types

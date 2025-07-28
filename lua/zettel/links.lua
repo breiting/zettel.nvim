@@ -62,6 +62,25 @@ function M.follow_link()
 		return
 	end
 
+	-- Check if the link may be an image
+	if link:match("%.png$") or link:match("%.jpg$") or link:match("%.jpeg$") then
+		local path = config.get_assets_dir() .. "/" .. link
+		print(path)
+
+		-- macOS: `open`, Linux: `xdg-open`, Windows: `start`
+		local opener = "open"
+		local args = { path }
+		if vim.fn.has("linux") == 1 then
+			opener = "xdg-open"
+		elseif vim.fn.has("win32") == 1 then
+			opener = "start"
+		end
+
+		vim.fn.jobstart(vim.list_extend({ opener }, args), { detach = true })
+		return
+	end
+
+	-- If no image, treat it like a note
 	local success = notes.open_note(link)
 	if not success then
 		-- Offer to create the note if it doesn't exist

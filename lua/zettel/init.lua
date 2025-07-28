@@ -40,6 +40,9 @@ end
 M.extract_to_new_note = function()
 	return notes.extract_to_new_note()
 end
+M.capture_image = function()
+	return notes.capture_image()
+end
 M.follow_link = function()
 	return links.follow_link()
 end

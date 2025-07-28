@@ -190,4 +190,26 @@ function M.open_note(note_id)
 	end
 end
 
+---Capture an image using the screencapture feature of macos and add the link to the current note
+---@return boolean success True if image was added successfully
+function M.capture_image()
+	local assets_dir = config.get_assets_dir()
+	vim.fn.mkdir(assets_dir, "p")
+
+	local filename = os.date("%Y-%m-%d-%H%M%S") .. ".png"
+	local filepath = assets_dir .. "/" .. filename
+
+	-- MacOS only!
+	vim.fn.system({ "screencapture", "-i", filepath })
+
+	if vim.v.shell_error ~= 0 then
+		vim.notify("Failed to get capture image", vim.log.levels.ERROR)
+		return true
+	end
+
+	local link = "![[" .. filename .. "]]"
+	vim.api.nvim_put({ link }, "c", true, true)
+	return true
+end
+
 return M

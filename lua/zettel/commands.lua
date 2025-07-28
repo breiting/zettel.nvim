@@ -29,6 +29,12 @@ function M.setup(zettel)
 		desc = "Extract selection to new zettel note",
 	})
 
+	vim.api.nvim_create_user_command("ZettelCaptureImage", function()
+		zettel.capture_image()
+	end, {
+		desc = "Capture an image with a screenshot (macos only!)",
+	})
+
 	-- Search commands
 	vim.api.nvim_create_user_command("ZettelSearch", function()
 		zettel.search_notes()

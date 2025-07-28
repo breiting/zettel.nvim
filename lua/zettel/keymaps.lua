@@ -21,6 +21,10 @@ function M.setup(zettel)
 		desc = "Zettel: Open today's journal",
 	})
 
+	vim.keymap.set("n", "<leader>zi", zettel.capture_image, {
+		desc = "Zettel: Capture an image with a screenshot (macos only!)",
+	})
+
 	vim.keymap.set("n", "<leader>zr", function()
 		zettel.search.search_recent()
 	end, {
