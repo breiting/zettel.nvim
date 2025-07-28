@@ -1,16 +1,22 @@
 # zettel.nvim
 
-A minimal yet powerful [neovim](https://neovim.io) plugin for managing a **frictionless personal knowledge management (PKM)** system using Markdown files – inspired by the [Zettelkasten method](https://en.wikipedia.org/wiki/Zettelkasten).
+A minimal yet powerful [neovim](https://neovim.io) plugin for managing a **frictionless personal knowledge management (fPKM)** system using Markdown files – inspired by the [Zettelkasten method](https://en.wikipedia.org/wiki/Zettelkasten).
 
-- **Zero friction**: No folders, no manual filenames – just write.
-- **Flat file structure**: One directory for all notes, IDs ensure uniqueness.
-- **Frontmatter-based metadata**: Tags, titles, and properties instead of folder hierarchies.
-- **Seamless navigation**: Jump between notes, search by title or full-text with Telescope.
-- **Obsidian compatible**: Use the same vault in both neovim and [Obsidian](https://obsidian.md).
+- Zero friction: No folders, no manual filenames – just write and link ideas.
+- Flat file structure: A single directory for all notes, with unique IDs to keep things organized.
+- Frontmatter-driven metadata: Titles, tags, and properties replace complex folder hierarchies.
+- Seamless navigation: Effortlessly jump between notes or search by title/full-text using Telescope.
+- Obsidian-compatible: Use the same vault seamlessly in both Neovim and [Obsidian](https://obsidian.md).
 
 ## Why zettel.nvim?
 
-I struggled with my PKM for years, tested all different kinds of system, but never felt "at home", and never was satisfied. Until I found out the reason. I had too much friction. Which directory structure, which file naming scheme, which system. It somehow set me back and I never got into it as I was hoping. As a result I was thinking what may be the minimal setup which allows me to eliminate all friction? Well, zettel.nvim was the result, and perfectly fits my needs, since I am also a heavy neovim user. The main requirements for this plugin are:
+After years of experimenting with various PKM setups, I kept running into the same problem: **friction**.
+Which folder structure should I use? How should I name my files? Which system should I commit to?
+These questions constantly got in my way and prevented me from truly engaging with my notes.
+
+`zettel.nvim` is the result of stripping all that complexity away. It’s a minimal, opinionated setup that lets me focus entirely on writing and connecting ideas — and it integrates perfectly into my Neovim workflow.
+
+The core principles are simple:
 
 - All notes live in **one flat folder** (your "vault").
 - Files are named automatically with a simple system **date + random ID**: `YYYY-MM-DD-XYZ.md`.
@@ -24,7 +30,7 @@ I struggled with my PKM for years, tested all different kinds of system, but nev
   ---
   ```
 
-You focus on writing and linking ideas, not on managing files.
+> You focus on writing and linking ideas, not on managing files.
 
 ## Features
 
@@ -35,7 +41,7 @@ You focus on writing and linking ideas, not on managing files.
 - Search by title with Telescope (<leader>zt)
 - Full-text search with Telescope (<leader>zf)
 - Extract selection to new note (visual mode, <leader>ze)
-- Works seamlessly with Obsidian (supports Front Matter Title plugin)
+- Works seamlessly with Obsidian (supports [Front Matter Title plugin](https://github.com/snezhig/obsidian-front-matter-title))
 
 ## Installation
 
@@ -95,7 +101,7 @@ require("zettel").setup({
 ### Create a new note
 
 ```vim
-:Zettel New [optional title]
+:ZettelNew [optional title]
 ```
 
 or
@@ -104,9 +110,31 @@ or
 <leader>nn
 ```
 
-### Default Keymaps
+### Open/create today's journal
 
-Global keymaps (available everywhere):
+```vim
+:ZettelJournal
+```
+
+or
+
+```vim
+<leader>zj
+```
+
+### Search note titles
+
+```vim
+:ZettelSearchTitle
+```
+
+### Full-text search
+
+```vim
+:ZettelSearchFull
+```
+
+## Default Keymaps
 
 - `<leader>nn` - Create new note
 - `<leader>zf` - Search full text in notes
@@ -120,7 +148,7 @@ Buffer-local keymaps (in vault markdown files):
 - `gf` or `<CR>` - Follow link under cursor
 - `[[` - Insert link (opens Telescope picker)
 
-### Commands
+## Commands
 
 - `:ZettelNew` - Create a new note
 - `:ZettelExtract` - Extract selection to new note
@@ -132,7 +160,7 @@ Buffer-local keymaps (in vault markdown files):
 - `:ZettelFollowLink` - Follow link under cursor
 - `:ZettelInfo` - Show plugin information
 
-### Note Format
+## Note Format
 
 Notes are created with YAML frontmatter:
 
@@ -156,8 +184,7 @@ You can link to other notes using [[2024-01-15-002|Another Note]].
 2. **Link to another note**: Type `[[` and select from the picker
 3. **Follow a link**: Place cursor on a link and press `gf`
 4. **Extract text to note**: Select text and press `<leader>ze`
-5. **Find related notes**: Press `<leader>zb` to see backlinks
-6. **Search by topic**: Press `<leader>zg` to search by tags
+5. **Search by topic**: Press `<leader>zg` to search by tags
 
 ## Architecture
 
@@ -175,7 +202,7 @@ The plugin is structured in modules for maintainability and extensibility:
 
 ## Requirements
 
-- Neovim >= 0.8.0
+- neovim >= 0.8.0
 - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 - [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
 - `ripgrep` (for searching functionality)
