@@ -1,0 +1,131 @@
+*zettel.txt*                  A minimal Zettelkasten/PKM plugin for Neovim
+==============================================================================
+zettel.nvim – Minimal Zettelkasten & PKM for Neovim
+==============================================================================
+Author: breiting <https://github.com/breiting/zettel.nvim>
+License: MIT
+==============================================================================
+CONTENTS                                                      *zettel-contents*
+
+    1. Introduction      |zettel-intro|
+    2. Installation      |zettel-install|
+    3. Configuration     |zettel-config|
+    4. Commands          |zettel-commands|
+    5. Keybindings       |zettel-keybindings|
+    6. Concepts          |zettel-concepts|
+    7. Integration       |zettel-integration|
+    8. Roadmap           |zettel-roadmap|
+
+==============================================================================
+INTRODUCTION                                                     *zettel-intro*
+
+`zettel.nvim` is a minimal yet powerful plugin for managing a frictionless
+Personal Knowledge Management (PKM) system using Markdown, inspired by the
+Zettelkasten method.
+
+- **Flat vault**: All notes in one directory.
+- **Frontmatter metadata**: Titles, tags, and properties instead of folders.
+- **Frictionless**: No manual filenames; IDs are auto-generated.
+- **Obsidian compatible**: Use the same vault in Obsidian.
+
+==============================================================================
+INSTALLATION                                                     *zettel-install*
+
+Install with [lazy.nvim](https://github.com/folke/lazy.nvim):
+
+>
+    {
+      "breiting/zettel.nvim",
+      dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
+      config = function()
+        require("zettel").setup({
+          vault_dir = "~/zettel", -- path to your vault
+        })
+      end,
+    }
+<
+
+==============================================================================
+CONFIGURATION                                                    *zettel-config*
+
+Default configuration:
+
+>
+    require("zettel").setup({
+      vault_dir = "~/zettel",
+    })
+<
+
+==============================================================================
+COMMANDS                                                         *zettel-commands*
+
+- `:ZettelNew [title]`  
+  Create a new note with optional title and tag `note`.
+
+- `:ZettelJournal [YYYY-MM-DD]`  
+  Open or create a daily journal note (today by default).
+
+- `:ZettelSearchTitle`  
+  Search notes by title via Telescope.
+
+- `:ZettelSearchFull`  
+  Full-text search in vault via Telescope.
+
+==============================================================================
+KEYBINDINGS                                                    *zettel-keybindings*
+
+These are **suggested** defaults; configure in your own `keymap.set`:
+
+>
+    <leader>zn   Create new note
+    <leader>zj   Open daily journal
+    <leader>zt   Search titles
+    <leader>zf   Full-text search
+    <leader>ne   Extract selection to new note (visual mode)
+<
+
+==============================================================================
+CONCEPTS                                                         *zettel-concepts*
+
+### Flat vault
+
+All notes are stored in a single directory (configured via `vault_dir`).
+
+### Filename format
+
+Files are named automatically as:
+
+>
+    YYYY-MM-DD-XXX.md
+<
+
+where `XXX` is a random 3-digit ID.
+
+### Frontmatter
+
+Metadata is stored in YAML frontmatter, e.g.:
+
+>
+    ---
+    id: 2025-07-24-042
+    title: Demis Hassabis
+    tags: [note]
+    ---
+<
+
+==============================================================================
+INTEGRATION                                                     *zettel-integration*
+
+- Compatible with [Obsidian](https://obsidian.md)
+- Works well with Obsidian plugin “Front Matter Title” (shows title in graph)
+
+==============================================================================
+ROADMAP                                                           *zettel-roadmap*
+
+- Tag-based search
+- Backlinks explorer
+- Templates per note type
+- Calendar view for journals
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:
