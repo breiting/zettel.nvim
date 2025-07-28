@@ -85,7 +85,7 @@ These are **suggested** defaults; configure in your own `keymap.set`:
     <leader>zj   Open daily journal
     <leader>zt   Search titles
     <leader>zf   Full-text search
-    <leader>ne   Extract selection to new note (visual mode)
+    <leader>ze   Extract selection to new note (visual mode)
 <
 
 ==============================================================================
