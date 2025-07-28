@@ -17,6 +17,10 @@ function M.setup(zettel)
 		desc = "Zettel: Search note titles",
 	})
 
+	vim.keymap.set("n", "<leader>zj", zettel.open_journal, {
+		desc = "Zettel: Open today's journal",
+	})
+
 	vim.keymap.set("n", "<leader>zr", function()
 		zettel.search.search_recent()
 	end, {

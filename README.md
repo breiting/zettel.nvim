@@ -1,14 +1,41 @@
 # zettel.nvim
 
-A powerful neovim plugin for managing a simple and minimalistic personal knowledge management (PKM) system with markdown files. It removes any friction, and concentrates on writing and navigating in your notes (similar to a Zettelkasten system). No thinking about where to put your files, no thinking about how to name your files, the system keeps track, and the tools offer a simple interface.
+A minimal yet powerful [neovim](https://neovim.io) plugin for managing a **frictionless personal knowledge management (PKM)** system using Markdown files – inspired by the [Zettelkasten method](https://en.wikipedia.org/wiki/Zettelkasten).
+
+- **Zero friction**: No folders, no manual filenames – just write.
+- **Flat file structure**: One directory for all notes, IDs ensure uniqueness.
+- **Frontmatter-based metadata**: Tags, titles, and properties instead of folder hierarchies.
+- **Seamless navigation**: Jump between notes, search by title or full-text with Telescope.
+- **Obsidian compatible**: Use the same vault in both neovim and [Obsidian](https://obsidian.md).
+
+## Why zettel.nvim?
+
+I struggled with my PKM for years, tested all different kinds of system, but never felt "at home", and never was satisfied. Until I found out the reason. I had too much friction. Which directory structure, which file naming scheme, which system. It somehow set me back and I never got into it as I was hoping. As a result I was thinking what may be the minimal setup which allows me to eliminate all friction? Well, zettel.nvim was the result, and perfectly fits my needs, since I am also a heavy neovim user. The main requirements for this plugin are:
+
+- All notes live in **one flat folder** (your "vault").
+- Files are named automatically with a simple system **date + random ID**: `YYYY-MM-DD-XYZ.md`.
+- Meaningful information (title, tags, status) lives in the **frontmatter**:
+
+  ```yaml
+  ---
+  id: 2025-07-24-042
+  title: Howto write a note
+  tags: [note]
+  ---
+  ```
+
+You focus on writing and linking ideas, not on managing files.
 
 ## Features
 
-- **Note Creation**: Create new notes with unique IDs and frontmatter
-- **Link Management**: Insert and follow wikilinks with `[[note-id|title]]` syntax
-- **Search**: Full-text search, title search, tag search
-- **Extract Notes**: Convert selected text into new linked notes
-- **Recent Notes**: Quick access to recently modified notes
+- Create new notes instantly from within neovim (<leader>nn or :ZettelNew)
+- Daily journal (<leader>zj or :ZettelJournal)
+- Insert wiki-style links with titles ([[id|Title]])
+- Follow links using `gf`
+- Search by title with Telescope (<leader>zt)
+- Full-text search with Telescope (<leader>zf)
+- Extract selection to new note (visual mode, <leader>ze)
+- Works seamlessly with Obsidian (supports Front Matter Title plugin)
 
 ## Installation
 
@@ -64,6 +91,18 @@ require("zettel").setup({
 ```
 
 ## Usage
+
+### Create a new note
+
+```vim
+:Zettel New [optional title]
+```
+
+or
+
+```vim
+<leader>nn
+```
 
 ### Default Keymaps
 

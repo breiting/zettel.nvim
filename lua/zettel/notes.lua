@@ -4,6 +4,57 @@ local config = require("zettel.config")
 ---@class ZettelNotes
 local M = {}
 
+-- Open or create a new journal note
+function M.open_journal(date)
+	local vault_dir = config.get_vault_dir()
+
+	-- Use given date or today
+	local target_date = date or os.date("%Y-%m-%d")
+
+	-- Check if a journal with this date already exists
+	local existing_file = nil
+	local rg_cmd = string.format('rg --files-with-matches "^title: %s" %s', target_date, vim.fn.shellescape(vault_dir))
+	local handle = io.popen(rg_cmd)
+	if handle then
+		for line in handle:lines() do
+			existing_file = line
+			break
+		end
+		handle:close()
+	end
+
+	local filepath
+	if existing_file then
+		-- Reuse existing file
+		filepath = existing_file
+	else
+		-- Create new journal
+		local id = utils.generate_id(config.date_format, config.id_random_digits)
+		filepath = vault_dir .. "/" .. id .. ".md"
+
+		local frontmatter = {
+			"---",
+			"id: " .. id,
+			"title: " .. target_date,
+			"tags: [journal]",
+			"date: " .. target_date,
+			"habits: []",
+			"---",
+			"",
+		}
+
+		vim.cmd("edit " .. filepath)
+		vim.api.nvim_buf_set_lines(0, 0, -1, false, frontmatter)
+		vim.cmd("write")
+		vim.cmd("normal! G")
+		return
+	end
+
+	-- Open existing journal
+	vim.cmd("edit " .. filepath)
+	vim.cmd("normal! G")
+end
+
 ---Create a new note with user input for title and type
 ---Creates a new markdown file with frontmatter and opens it for editing
 function M.new_note()

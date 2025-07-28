@@ -11,6 +11,17 @@ function M.setup(zettel)
 		desc = "Create a new zettel note",
 	})
 
+	-- Journal creation commands
+	vim.api.nvim_create_user_command("ZettelJournal", function(opts)
+		if opts.args and opts.args ~= "" then
+			zettel.notes.open_journal(opts.args)
+		else
+			zettel.notes.open_journal()
+		end
+	end, {
+		desc = "Opens or create a new journal note",
+	})
+
 	vim.api.nvim_create_user_command("ZettelExtract", function()
 		zettel.extract_to_new_note()
 	end, {

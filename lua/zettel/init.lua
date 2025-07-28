@@ -34,6 +34,9 @@ end
 M.new_note = function()
 	return notes.new_note()
 end
+M.open_journal = function()
+	return notes.open_journal()
+end
 M.extract_to_new_note = function()
 	return notes.extract_to_new_note()
 end
