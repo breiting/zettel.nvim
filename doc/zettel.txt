@@ -122,10 +122,8 @@ INTEGRATION                                                     *zettel-integrat
 ==============================================================================
 ROADMAP                                                           *zettel-roadmap*
 
-- Tag-based search
-- Backlinks explorer
-- Templates per note type
-- Calendar view for journals
+Open for new ideas. This plugin will be extended as I am using it daily.
+I will implement features, once I discover new requirements.
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:
