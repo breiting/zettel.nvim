@@ -9,6 +9,7 @@ local search = require("zettel.search")
 local keymaps = require("zettel.keymaps")
 local commands = require("zettel.commands")
 local autocmds = require("zettel.autocmds")
+local utils = require("zettel.utils")
 
 -- Module references for external access
 M.config = config
@@ -54,6 +55,9 @@ M.search_notes = function()
 end
 M.search_titles = function()
 	return search.search_titles()
+end
+M.toggle_checkbox = function()
+	return utils.toggle_checkbox()
 end
 
 return M

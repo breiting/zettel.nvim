@@ -136,4 +136,27 @@ function M.trim(str)
 	return vim.trim(str)
 end
 
+-- Toggle a checkbox line
+function M.toggle_checkbox()
+	-- Get the current line
+	local line = vim.api.nvim_get_current_line()
+
+	-- Check if line contains unchecked checkbox
+	if line:match("^%s*-%s*%[ %]") then
+		-- Replace unchecked with checked
+		local new_line = line:gsub("%[ %]", "[x]")
+		vim.api.nvim_set_current_line(new_line)
+
+		-- Check if line contains checked checkbox
+	elseif line:match("^%s*-%s*%[x%]") then
+		-- Replace checked with unchecked
+		local new_line = line:gsub("%[x%]", "[ ]")
+		vim.api.nvim_set_current_line(new_line)
+
+		-- If no checkbox, do nothing
+	else
+		print("No checkbox found on this line")
+	end
+end
+
 return M

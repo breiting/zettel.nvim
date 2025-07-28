@@ -41,6 +41,11 @@ function M.setup(zettel)
 	vim.keymap.set("v", "<leader>ze", zettel.extract_to_new_note, {
 		desc = "Zettel: Extract selection to new note",
 	})
+
+	-- Toggle a checkbox line
+	vim.keymap.set("n", "<leader>tt", zettel.toggle_checkbox, {
+		desc = "Zettel: toggle the current checkbox",
+	})
 end
 
 ---Setup buffer-local keymaps for markdown files in the vault
