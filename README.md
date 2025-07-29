@@ -6,6 +6,7 @@ A minimal yet powerful [neovim](https://neovim.io) plugin for managing a **frict
 - Flat file structure: A single directory for all notes, with unique IDs to keep things organized.
 - Frontmatter-driven metadata: Titles, tags, and properties replace complex folder hierarchies.
 - Seamless navigation: Effortlessly jump between notes or search by title/full-text using Telescope.
+- Views can be created to filter and organize virtual notes
 - Obsidian-compatible: Use the same vault seamlessly in both Neovim and [Obsidian](https://obsidian.md).
 
 ## Why zettel.nvim?
@@ -40,6 +41,7 @@ The core principles are simple:
 - Follow links using `gf` (also supports preview of images)
 - Preview link content using `K`
 - Search by title with Telescope (<leader>zt)
+- Define views for virtually group notes of similar type (<leader>zv)
 - Full-text search with Telescope (<leader>zf)
 - Extract selection to new note (visual mode, <leader>ze)
 - Capture a screenshot and add the image to the note (MacOS only!)
@@ -200,6 +202,22 @@ Content goes here...
 You can link to other notes using [[2024-01-15-002|Another Note]].
 ```
 
+### View Notes
+
+View notes are notes which group notes. Currently The current version is a primitive version.
+
+```markdown
+---
+id: 2025-07-29-265
+title: My View
+tags: [view]
+---
+
+\`\`\`view
+tags: content
+\`\`\`
+```
+
 ## Architecture
 
 The plugin is structured in modules for maintainability and extensibility:
@@ -216,7 +234,7 @@ The plugin is structured in modules for maintainability and extensibility:
 
 ## Requirements
 
-- neovim >= 0.8.0
+- neovim >= 0.10.0
 - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 - [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
 - `ripgrep` (for searching functionality)

@@ -172,4 +172,43 @@ function M.apply_placeholders(template_lines, values)
 	return replaced
 end
 
+--- Parse complete frontmatter and return all fields
+function M.parse_frontmatter(file)
+	local lines = vim.fn.readfile(file)
+	if not lines or #lines == 0 then
+		return nil
+	end
+
+	local in_frontmatter = false
+	local data = {}
+
+	for _, line in ipairs(lines) do
+		if line:match("^---%s*$") then
+			in_frontmatter = not in_frontmatter
+		elseif in_frontmatter then
+			-- Key: Value pairs
+			local key, value = line:match("^(%S+)%s*:%s*(.*)$")
+			if key and value then
+				-- Parse list [tag1, tag2]
+				if value:match("^%[.*%]$") then
+					local list = {}
+					for tag in value:gmatch("[^,%s%[%]]+") do
+						table.insert(list, tag)
+					end
+					data[key] = list
+				else
+					data[key] = value
+				end
+			end
+		else
+			-- Frontmatter end
+			if next(data) ~= nil then
+				break
+			end
+		end
+	end
+
+	return next(data) ~= nil and data or nil
+end
+
 return M
