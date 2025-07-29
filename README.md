@@ -37,7 +37,8 @@ The core principles are simple:
 - Create new notes instantly from within neovim (<leader>nn or :ZettelNew)
 - Daily journal (<leader>zj or :ZettelJournal)
 - Insert wiki-style links with titles ([[id|Title]])
-- Follow links using `gf` (also supports preview images)
+- Follow links using `gf` (also supports preview of images)
+- Preview link content using `K`
 - Search by title with Telescope (<leader>zt)
 - Full-text search with Telescope (<leader>zf)
 - Extract selection to new note (visual mode, <leader>ze)
