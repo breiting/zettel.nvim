@@ -243,4 +243,40 @@ function M.capture_image()
 	return true
 end
 
+---Preview a note (show content in a floating window)
+function M.preview_note()
+	local link = utils.get_link_under_cursor()
+	if not link then
+		return
+	end
+	local filepath = config.get_vault_dir() .. "/" .. link .. ".md"
+
+	if vim.fn.filereadable(filepath) == 0 then
+		vim.notify("Note not found: " .. link, vim.log.levels.WARN)
+		return
+	end
+
+	local lines = vim.fn.readfile(filepath)
+	local preview = {}
+	local in_frontmatter = false
+	local preview_length = 10
+
+	for _, line in ipairs(lines) do
+		if line == "---" then
+			in_frontmatter = not in_frontmatter
+		elseif not in_frontmatter then
+			table.insert(preview, line)
+			if #preview >= preview_length then
+				break
+			end -- only the first 10 lines
+		end
+	end
+
+	-- Floating Window
+	local opts = {
+		border = "rounded",
+	}
+	vim.lsp.util.open_floating_preview(preview, "markdown", opts)
+end
+
 return M

@@ -65,7 +65,6 @@ function M.follow_link()
 	-- Check if the link may be an image
 	if link:match("%.png$") or link:match("%.jpg$") or link:match("%.jpeg$") then
 		local path = config.get_assets_dir() .. "/" .. link
-		print(path)
 
 		-- macOS: `open`, Linux: `xdg-open`, Windows: `start`
 		local opener = "open"

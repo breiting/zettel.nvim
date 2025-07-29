@@ -57,6 +57,12 @@ function M.setup_buffer_keymaps(zettel)
 		desc = "Zettel: Follow link under cursor",
 	})
 
+	-- Preview content of note link
+	vim.keymap.set("n", "K", zettel.preview_note, {
+		buffer = true,
+		desc = "Zettel: Preview the note under cursor",
+	})
+
 	-- Alternative follow link mapping
 	vim.keymap.set("n", "<CR>", zettel.follow_link, {
 		buffer = true,

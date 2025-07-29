@@ -47,6 +47,9 @@ end
 M.follow_link = function()
 	return links.follow_link()
 end
+M.preview_note = function()
+	return notes.preview_note()
+end
 M.insert_link_titles = function()
 	return links.insert_link_titles()
 end
