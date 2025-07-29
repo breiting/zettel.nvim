@@ -159,4 +159,17 @@ function M.toggle_checkbox()
 	end
 end
 
+--- Search and replace placeholder for templates
+function M.apply_placeholders(template_lines, values)
+	local replaced = {}
+	for _, line in ipairs(template_lines) do
+		local new_line = line
+		for key, val in pairs(values) do
+			new_line = new_line:gsub("%$" .. key .. "%$", val)
+		end
+		table.insert(replaced, new_line)
+	end
+	return replaced
+end
+
 return M

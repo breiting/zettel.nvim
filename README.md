@@ -93,7 +93,10 @@ require("zettel").setup({
     date_format = "%Y-%m-%d",
 
     -- Asset directory (for images)
-    asset_dir = "_assets",
+    assets_dir = "_assets",
+
+    -- Templates directory
+    templates_dir = "_templates",
 
     -- Number of random digits in note IDs [default]
     id_random_digits = 3,

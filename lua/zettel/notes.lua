@@ -4,6 +4,15 @@ local config = require("zettel.config")
 ---@class ZettelNotes
 local M = {}
 
+--- Load a template file
+local function load_template(note_type)
+	local template_file = config.get_templates_dir() .. "/" .. note_type .. ".md"
+	if vim.fn.filereadable(template_file) == 1 then
+		return vim.fn.readfile(template_file)
+	end
+	return {} -- Empty template
+end
+
 -- Open or create a new journal note
 function M.open_journal(date)
 	local vault_dir = config.get_vault_dir()
@@ -32,19 +41,31 @@ function M.open_journal(date)
 		local id = utils.generate_id(config.date_format, config.id_random_digits)
 		filepath = vault_dir .. "/" .. id .. ".md"
 
-		local frontmatter = {
-			"---",
-			"id: " .. id,
-			"title: " .. target_date,
-			"tags: [journal]",
-			"date: " .. target_date,
-			"habits: []",
-			"---",
-			"",
-		}
+		-- Load journal template, or create a default frontmatter
+		local template = load_template("journal")
+		if not template or vim.tbl_isempty(template) then
+			template = {
+				"---",
+				"id: " .. id,
+				"title: " .. target_date,
+				"tags: [journal]",
+				"date: " .. target_date,
+				"habits: []",
+				"---",
+				"",
+			}
+		else
+			-- Apply supported placeholder
+			local values = {
+				id = id,
+				title = target_date,
+				date = target_date,
+			}
+			template = utils.apply_placeholders(template, values)
+		end
 
 		vim.cmd("edit " .. filepath)
-		vim.api.nvim_buf_set_lines(0, 0, -1, false, frontmatter)
+		vim.api.nvim_buf_set_lines(0, 0, -1, false, template)
 		vim.cmd("write")
 		vim.cmd("normal! G")
 		return
@@ -56,7 +77,6 @@ function M.open_journal(date)
 end
 
 ---Create a new note with user input for title and type
----Creates a new markdown file with frontmatter and opens it for editing
 function M.new_note()
 	local vault_dir = config.get_vault_dir()
 
@@ -72,8 +92,18 @@ function M.new_note()
 		vim.ui.select(config.get_note_types(), { prompt = "Note Type:" }, function(choice)
 			local note_type = choice or "note"
 
-			-- Create template with frontmatter
-			local template = utils.create_frontmatter_template(id, title, note_type)
+			-- Load template, or create a default frontmatter
+			local template = load_template(note_type)
+			if not template or vim.tbl_isempty(template) then
+				template = utils.create_frontmatter_template(id, title, note_type)
+			else
+				-- Apply supported placeholder
+				local values = {
+					id = id,
+					title = title,
+				}
+				template = utils.apply_placeholders(template, values)
+			end
 
 			-- Create and open the file
 			if not utils.file_exists(filepath) then
