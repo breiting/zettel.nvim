@@ -101,6 +101,7 @@ function M.new_note()
 				local values = {
 					id = id,
 					title = title,
+					today = os.date("%Y-%m-%d"),
 				}
 				template = utils.apply_placeholders(template, values)
 			end
