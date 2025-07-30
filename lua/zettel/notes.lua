@@ -77,7 +77,8 @@ function M.open_journal(date)
 end
 
 ---Create a new note with user input for title and type
-function M.new_note()
+---@param content? string Optional content which will be added after the frontmatter
+function M.new_note(content)
 	local vault_dir = config.get_vault_dir()
 
 	local id = utils.generate_id(config.date_format, config.id_random_digits)
@@ -109,7 +110,22 @@ function M.new_note()
 			-- Create and open the file
 			if not utils.file_exists(filepath) then
 				vim.cmd("edit " .. filepath)
+
 				vim.api.nvim_buf_set_lines(0, 0, -1, false, template)
+
+				-- Add optional content at the end
+				if content then
+					local content_lines
+					if type(content) == "string" then
+						content_lines = vim.split(content, "\n", { plain = true })
+					else
+						content_lines = content
+					end
+
+					table.insert(content_lines, 1, "")
+					vim.api.nvim_buf_set_lines(0, -1, -1, false, content_lines)
+				end
+
 				vim.cmd("write")
 			else
 				vim.cmd("edit " .. filepath)
@@ -120,6 +136,13 @@ function M.new_note()
 			vim.api.nvim_win_set_cursor(0, { lastline, 0 })
 		end)
 	end)
+end
+
+---Create a new note and add the content of the current buffer
+function M.add_current_buffer_as_note()
+	local buf_lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+	local content = table.concat(buf_lines, "\n")
+	M.new_note(content)
 end
 
 ---Extract selected text to a new note and replace with wikilink

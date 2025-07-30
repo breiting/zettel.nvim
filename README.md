@@ -16,7 +16,7 @@ After years of experimenting with various PKM setups, I kept running into the sa
 Which folder structure should I use? How should I name my files? Which system should I commit to?
 These questions constantly got in my way and prevented me from truly engaging with my notes.
 
-`zettel.nvim` is the result of stripping all that complexity away. It’s a minimal, opinionated setup that lets me focus entirely on writing and connecting ideas — and it integrates perfectly into my Neovim workflow.
+`zettel.nvim` is the result of stripping all that complexity away. It’s a minimal, opinionated setup that lets me focus entirely on writing and connecting ideas — nd it integrates perfectly into my Neovim workflow.
 
 The core principles are simple:
 
@@ -46,6 +46,7 @@ The core principles are simple:
 - Full-text search with Telescope (<leader>zf)
 - Extract selection to new note (visual mode, <leader>ze)
 - Capture a screenshot and add the image to the note (MacOS only!)
+- Create a new note from the current buffer (<leader>za)
 - Works seamlessly with Obsidian (supports [Front Matter Title plugin](https://github.com/snezhig/obsidian-front-matter-title))
 
 ## Installation

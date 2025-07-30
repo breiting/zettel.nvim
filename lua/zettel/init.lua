@@ -45,6 +45,9 @@ end
 M.new_note = function()
 	return notes.new_note()
 end
+M.add_current_buffer_as_note = function()
+	return notes.add_current_buffer_as_note()
+end
 M.open_journal = function()
 	return notes.open_journal()
 end

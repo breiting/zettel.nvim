@@ -22,6 +22,12 @@ function M.setup(zettel)
 		desc = "Opens or create a new journal note",
 	})
 
+	vim.api.nvim_create_user_command("ZettelAdd", function()
+		zettel.add_current_buffer_as_note()
+	end, {
+		desc = "Create a new note with the content of the current buffer",
+	})
+
 	vim.api.nvim_create_user_command("ZettelExtract", function()
 		zettel.extract_to_new_note()
 	end, {

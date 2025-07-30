@@ -9,6 +9,10 @@ function M.setup(zettel)
 		desc = "Zettel: Create new note",
 	})
 
+	vim.keymap.set("n", "<leader>za", zettel.add_current_buffer_as_note, {
+		desc = "Zettel: Add current buffer as new note",
+	})
+
 	vim.keymap.set("n", "<leader>zf", zettel.search_notes, {
 		desc = "Zettel: Search full text",
 	})
