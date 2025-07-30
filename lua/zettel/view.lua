@@ -1,28 +1,21 @@
 local M = {}
 
-local config = require("zettel.config")
-local utils = require("zettel.utils")
+local cache = require("zettel.cache")
 
 ---Get all view files from vault
 local function get_all_views()
-	local vault = config.get_vault_dir()
 	local results = {}
 
-	-- Suche nach Files mit "tags: [view]"
-	local cmd = "rg --no-heading --with-filename '^tags:.*view' " .. vim.fn.shellescape(vault)
-	local handle = io.popen(cmd)
-	if not handle then
-		return results
-	end
-
-	for line in handle:lines() do
-		local file = line:match("([^:]+):")
-		if file then
-			local title = utils.get_note_title(file) or vim.fn.fnamemodify(file, ":t")
-			table.insert(results, { file = file, title = title })
+	-- Search for files with "tags: [view]"
+	local notes = cache.notes
+	for _, note in ipairs(notes) do
+		if note.tags and vim.tbl_contains(note.tags, "view") then
+			table.insert(results, {
+				file = note.path,
+				title = note.title or vim.fn.fnamemodify(note.path, ":t"),
+			})
 		end
 	end
-	handle:close()
 
 	return results
 end
@@ -52,61 +45,38 @@ end
 
 ---Apply query filter on all notes
 local function run_query(filters)
-	local vault = config.get_vault_dir()
-	local cmd = "rg --files " .. vim.fn.shellescape(vault) .. " -g '*.md'"
-	local handle = io.popen(cmd)
-	if not handle then
-		return {}
-	end
-
+	local notes = cache.notes
 	local results = {}
 
-	for file in handle:lines() do
-		local meta = utils.parse_frontmatter(file) or {}
-
-		-- Filter: tags
+	for _, note in ipairs(notes) do
 		if filters.tags then
-			local required_tag = filters.tags
-
-			-- Falls tags kein Table ist → in Table umwandeln
-			local tags = meta.tags
-			if type(tags) == "string" then
-				tags = { tags }
-			elseif tags == nil then
-				tags = {}
-			end
-
-			if not vim.tbl_contains(tags, required_tag) then
+			if not (note.tags and vim.tbl_contains(note.tags, filters.tags)) then
 				goto continue
 			end
 		end
 
-		-- Filter: status
 		if filters.status then
-			if not (meta.status and meta.status == filters.status) then
+			if not (note.status and note.status == filters.status) then
 				goto continue
 			end
 		end
 
-		-- Filter: date
 		if filters.date then
-			local date = meta.date or meta.published
-			if not date or date < filters.date then
+			if not note.date or note.date < filters.date then
 				goto continue
 			end
 		end
 
 		table.insert(results, {
-			path = file,
-			title = meta.title or vim.fn.fnamemodify(file, ":t"),
-			tags = meta.tags or {},
-			date = vim.fn.getftime(file),
+			path = note.path,
+			title = note.title or vim.fn.fnamemodify(note.path, ":t"),
+			tags = note.tags or {},
+			date = vim.fn.getftime(note.path),
 		})
 
 		::continue::
 	end
 
-	handle:close()
 	return results
 end
 
@@ -177,6 +147,7 @@ local function show_views_list()
 		col = col,
 		style = "minimal",
 		border = "rounded",
+		title = " VIEWS ",
 	})
 
 	vim.keymap.set("n", "<CR>", function()
@@ -187,6 +158,10 @@ local function show_views_list()
 			local filters = parse_view(selected.file)
 			show_query_results(filters)
 		end
+	end, { buffer = buf, nowait = true })
+
+	vim.keymap.set("n", "<Esc>", function()
+		vim.api.nvim_win_close(win, true)
 	end, { buffer = buf, nowait = true })
 end
 

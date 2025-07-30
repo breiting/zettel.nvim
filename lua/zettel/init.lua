@@ -7,9 +7,11 @@ local notes = require("zettel.notes")
 local links = require("zettel.links")
 local search = require("zettel.search")
 local keymaps = require("zettel.keymaps")
+local cache = require("zettel.cache")
 local commands = require("zettel.commands")
 local autocmds = require("zettel.autocmds")
 local utils = require("zettel.utils")
+local view = require("zettel.view")
 
 -- Module references for external access
 M.config = config
@@ -29,6 +31,14 @@ function M.setup(opts)
 	keymaps.setup(M)
 	commands.setup(M)
 	autocmds.setup(M)
+
+	-- Build the cache initially
+	local start_time = vim.loop.hrtime()
+	cache.build_cache()
+	local elapsed = (vim.loop.hrtime() - start_time) / 1e6 -- ms
+	vim.schedule(function()
+		vim.notify(string.format("ZettelCache built in %.2f ms", elapsed), vim.log.levels.INFO)
+	end)
 end
 
 -- Expose main functions for backward compatibility and external access
@@ -61,6 +71,12 @@ M.search_titles = function()
 end
 M.toggle_checkbox = function()
 	return utils.toggle_checkbox()
+end
+M.show_views = function()
+	return view.show_views_list()
+end
+M.build_cache = function()
+	return cache.build_cache()
 end
 
 return M

@@ -6,7 +6,8 @@ A minimal yet powerful [neovim](https://neovim.io) plugin for managing a **frict
 - Flat file structure: A single directory for all notes, with unique IDs to keep things organized.
 - Frontmatter-driven metadata: Titles, tags, and properties replace complex folder hierarchies.
 - Seamless navigation: Effortlessly jump between notes or search by title/full-text using Telescope.
-- Views can be created to filter and organize virtual notes
+- Views can be created to filter and organize virtual notes.
+- Cache support for a large set of files.
 - Obsidian-compatible: Use the same vault seamlessly in both Neovim and [Obsidian](https://obsidian.md).
 
 ## Why zettel.nvim?

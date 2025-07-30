@@ -13,7 +13,7 @@ local function load_template(note_type)
 	return {} -- Empty template
 end
 
--- Open or create a new journal note
+-- Open or create a new journal note (do not use cache here!)
 function M.open_journal(date)
 	local vault_dir = config.get_vault_dir()
 

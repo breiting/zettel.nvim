@@ -26,41 +26,28 @@ function M.search_notes()
 	})
 end
 
----Search through note titles using ripgrep
+---Search through note titles using note's cache
 ---Finds and displays all notes based on their frontmatter titles
 function M.search_titles()
-	local vault_dir = config.get_vault_dir()
-	local escaped_vault = vim.fn.shellescape(vault_dir)
-
-	-- Search for all titles in the vault using ripgrep
-	local cmd = 'rg --follow --no-heading --line-number "^title\\s*:" ' .. escaped_vault
-	local handle = io.popen(cmd)
-
-	if not handle then
-		vim.notify("Failed to run ripgrep. Make sure ripgrep is installed.", vim.log.levels.ERROR)
-		return
-	end
-
+	local cache = require("zettel.cache").notes
 	local results = {}
 
-	for line in handle:lines() do
-		-- Example line: /path/to/file.md:2:title: My Title
-		local file, title = string.match(line, "^(.*):%d+:title:?%s*(.*)$")
-
-		if file and title and utils.trim(title) ~= "" then
+	for _, note in ipairs(cache) do
+		if note.title and note.title ~= "" then
 			table.insert(results, {
-				value = file,
-				display = utils.trim(title),
-				ordinal = utils.trim(title) .. " " .. file,
+				value = note.path,
+				display = note.title,
+				ordinal = note.title .. " " .. note.path,
+				date = vim.fn.getftime(note.path),
 			})
 		end
 	end
-	handle:close()
 
-	if #results == 0 then
-		vim.notify("No titles found. Check if your notes have 'title:' in frontmatter", vim.log.levels.WARN)
-		return
-	end
+	table.sort(results, function(a, b)
+		local da = a.date or ""
+		local db = b.date or ""
+		return da > db
+	end)
 
 	telescope
 		.new({}, {
@@ -88,46 +75,28 @@ end
 ---Search for notes by tags
 ---@param tag? string Optional specific tag to search for
 function M.search_by_tag(tag)
-	local vault_dir = config.get_vault_dir()
-	local search_pattern
-
-	if tag then
-		search_pattern = "tags:.*\\b" .. vim.pesc(tag) .. "\\b"
-	else
-		search_pattern = "^tags:"
-	end
-
-	local escaped_vault = vim.fn.shellescape(vault_dir)
-	local cmd = 'rg --follow --no-heading --line-number "' .. search_pattern .. '" ' .. escaped_vault
-	local handle = io.popen(cmd)
-
-	if not handle then
-		vim.notify("Failed to run ripgrep for tag search", vim.log.levels.ERROR)
-		return
-	end
-
+	local cache = require("zettel.cache").notes
 	local results = {}
-	local processed_files = {}
 
-	for line in handle:lines() do
-		local file = string.match(line, "^([^:]+):")
-
-		if file and not processed_files[file] then
-			processed_files[file] = true
-			local title = utils.get_note_title(file) or utils.get_filename_without_ext(file)
-			table.insert(results, {
-				value = file,
-				display = title .. " (" .. utils.get_filename_without_ext(file) .. ")",
-				ordinal = title .. " " .. file,
-			})
+	for _, note in ipairs(cache) do
+		if tag then
+			if vim.tbl_contains(note.tags, tag) then
+				table.insert(results, {
+					value = note.path,
+					display = string.format("%s (%s)", note.title, vim.fn.fnamemodify(note.path, ":t:r")),
+					ordinal = note.title .. " " .. table.concat(note.tags, " "),
+				})
+			end
+		else
+			-- If not tag is specified, add all notes with tags
+			if #note.tags > 0 then
+				table.insert(results, {
+					value = note.path,
+					display = string.format("%s (%s)", note.title, vim.fn.fnamemodify(note.path, ":t:r")),
+					ordinal = note.title .. " " .. table.concat(note.tags, " "),
+				})
+			end
 		end
-	end
-	handle:close()
-
-	if #results == 0 then
-		local search_desc = tag and ("with tag '" .. tag .. "'") or "with tags"
-		vim.notify("No notes found " .. search_desc, vim.log.levels.INFO)
-		return
 	end
 
 	local title_suffix = tag and (" - Tag: " .. tag) or ""
@@ -154,34 +123,21 @@ function M.search_by_tag(tag)
 		:find()
 end
 
----Get all unique tags from the vault
+---Get all unique tags from cache
 ---@return string[] tags Array of unique tags found in all notes
 function M.get_all_tags()
-	local vault_dir = config.get_vault_dir()
-	local escaped_vault = vim.fn.shellescape(vault_dir)
-	local cmd = 'rg --follow --no-heading "^tags:" ' .. escaped_vault
-	local handle = io.popen(cmd)
-
-	if not handle then
-		return {}
-	end
-
+	local cache = require("zettel.cache").notes
 	local tags = {}
 	local tag_set = {}
 
-	for line in handle:lines() do
-		local tags_line = string.match(line, ":tags:%s*(.+)$")
-		if tags_line then
-			-- Parse tags from [tag1, tag2, tag3] format
-			for tag in tags_line:gmatch("%w+") do
-				if not tag_set[tag] then
-					tag_set[tag] = true
-					table.insert(tags, tag)
-				end
+	for _, note in ipairs(cache) do
+		for _, tag in ipairs(note.tags or {}) do
+			if not tag_set[tag] then
+				tag_set[tag] = true
+				table.insert(tags, tag)
 			end
 		end
 	end
-	handle:close()
 
 	table.sort(tags)
 	return tags
@@ -208,7 +164,7 @@ function M.search_tags_interactive()
 	end)
 end
 
----Show recently modified notes
+---Show recently modified notes (do not use cache here!)
 ---@param limit? number Maximum number of notes to show (default: 20)
 function M.search_recent(limit)
 	limit = limit or 20

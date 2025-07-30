@@ -3,6 +3,8 @@
 ---@field note_types string[] Available note types for selection
 ---@field date_format string Format string for date generation
 ---@field id_random_digits number Number of random digits in ID
+---@field assets_dir string The directory for your assets
+---@field templates_dir string The directory for your templates
 
 ---@type ZettelConfig
 local default_config = {
@@ -10,6 +12,7 @@ local default_config = {
 	assets_dir = "_assets",
 	templates_dir = "_templates",
 	note_types = { "note", "capture", "journal", "meeting", "meta" },
+	ignore_dirs = { "_assets", "_templates" },
 	date_format = "%Y-%m-%d",
 	id_random_digits = 3,
 }
@@ -58,6 +61,12 @@ end
 ---@return string assets_dir The absolute directory path
 function M.get_templates_dir()
 	return config.vault_dir .. "/" .. config.templates_dir
+end
+
+---Get the ignore directories
+---@return table ignore_dirs
+function M.get_ignore_dirs()
+	return config.ignore_dirs
 end
 
 ---Get available note types
