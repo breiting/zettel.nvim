@@ -83,6 +83,12 @@ function M.setup(zettel)
 		desc = "Follow the link under cursor",
 	})
 
+	-- Refresh zettel cache
+	vim.api.nvim_create_user_command("ZettelRefresh", function()
+		zettel.build_cache()
+		vim.notify("Zettel cache refreshed")
+	end, {})
+
 	-- Utility commands
 	vim.api.nvim_create_user_command("ZettelInfo", function()
 		local config = zettel.config.get()

@@ -208,6 +208,15 @@ function M.parse_frontmatter(file)
 		end
 	end
 
+	-- Make sure that tags will remain a table and not a string
+	if data.tags then
+		if type(data.tags) == "string" then
+			data.tags = { data.tags }
+		end
+	else
+		data.tags = {}
+	end
+
 	return next(data) ~= nil and data or nil
 end
 
