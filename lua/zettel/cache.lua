@@ -9,7 +9,7 @@ local utils = require("zettel.utils")
 function M.build_cache()
 	M.notes = {}
 
-	local vault = config.get_vault_dir()
+	local vault = vim.fn.shellescape(config.get_vault_dir())
 	local ignore_dirs = config.get_ignore_dirs()
 
 	local cmd = { "rg", "--files", vault, "-g", "*.md" }
