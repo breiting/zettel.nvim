@@ -5,6 +5,17 @@ local config = require("zettel.config")
 ---@class ZettelAutocmds
 local M = {}
 
+-- Set hightlights for bold and italic
+local function set_markdown_highlights()
+	vim.api.nvim_set_hl(0, "@markup.strong", { bg = "#2f4a2f", bold = true })
+	vim.api.nvim_set_hl(0, "@markup.italic", { bg = "#4a2f2f", italic = true })
+end
+
+-- 1. Autocmd für Theme-Wechsel
+vim.api.nvim_create_autocmd("ColorScheme", {
+	callback = set_markdown_highlights,
+})
+
 ---Setup autocommands for the zettel plugin
 function M.setup(zettel)
 	-- Create augroup for zettel plugin
@@ -46,6 +57,13 @@ function M.setup(zettel)
 			end
 		end,
 	})
+
+	-- Setup optimized color highlights
+	vim.api.nvim_create_autocmd("ColorScheme", {
+		callback = set_markdown_highlights,
+	})
+
+	set_markdown_highlights()
 end
 
 return M
