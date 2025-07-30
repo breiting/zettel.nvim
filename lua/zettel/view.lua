@@ -1,7 +1,5 @@
 local M = {}
 
-local config = require("zettel.config")
-local utils = require("zettel.utils")
 local cache = require("zettel.cache")
 
 ---Get all view files from vault
@@ -149,6 +147,7 @@ local function show_views_list()
 		col = col,
 		style = "minimal",
 		border = "rounded",
+		title = " VIEWS ",
 	})
 
 	vim.keymap.set("n", "<CR>", function()
@@ -159,6 +158,10 @@ local function show_views_list()
 			local filters = parse_view(selected.file)
 			show_query_results(filters)
 		end
+	end, { buffer = buf, nowait = true })
+
+	vim.keymap.set("n", "<Esc>", function()
+		vim.api.nvim_win_close(win, true)
 	end, { buffer = buf, nowait = true })
 end
 

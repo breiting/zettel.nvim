@@ -11,6 +11,7 @@ local cache = require("zettel.cache")
 local commands = require("zettel.commands")
 local autocmds = require("zettel.autocmds")
 local utils = require("zettel.utils")
+local view = require("zettel.view")
 
 -- Module references for external access
 M.config = config
@@ -70,6 +71,9 @@ M.search_titles = function()
 end
 M.toggle_checkbox = function()
 	return utils.toggle_checkbox()
+end
+M.show_views = function()
+	return view.show_views_list()
 end
 M.build_cache = function()
 	return cache.build_cache()

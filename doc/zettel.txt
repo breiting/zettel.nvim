@@ -26,6 +26,7 @@ Zettelkasten method.
 - **Flat vault**: All notes in one directory.
 - **Frontmatter metadata**: Titles, tags, and properties instead of folders.
 - **Frictionless**: No manual filenames; IDs are auto-generated.
+- **Cache**: efficient handling by using a cache
 - **Obsidian compatible**: Use the same vault in Obsidian.
 
 ==============================================================================
