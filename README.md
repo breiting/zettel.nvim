@@ -10,6 +10,8 @@ A minimal yet powerful [neovim](https://neovim.io) plugin for managing a **frict
 - Cache support for a large set of files.
 - Obsidian-compatible: Use the same vault seamlessly in both Neovim and [Obsidian](https://obsidian.md).
 
+For a detailed description of my system, please see my [article](https://craftpurist.substack.com/p/the-zettel-system).
+
 ## Why zettel.nvim?
 
 After years of experimenting with various PKM setups, I kept running into the same problem: **friction**.
