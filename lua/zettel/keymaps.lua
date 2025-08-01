@@ -17,8 +17,12 @@ function M.setup(zettel)
 		desc = "Zettel: Search full text",
 	})
 
-	vim.keymap.set("n", "<leader>zt", zettel.search_titles, {
+	vim.keymap.set("n", "<leader>zs", zettel.search_titles, {
 		desc = "Zettel: Search note titles",
+	})
+
+	vim.keymap.set("n", "<leader>zt", zettel.search_tags_interactive, {
+		desc = "Zettel: Search based on available tags",
 	})
 
 	vim.keymap.set("n", "<leader>zv", zettel.show_views, {

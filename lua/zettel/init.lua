@@ -72,6 +72,9 @@ end
 M.search_titles = function()
 	return search.search_titles()
 end
+M.search_tags_interactive = function()
+	return search.search_tags_interactive()
+end
 M.toggle_checkbox = function()
 	return utils.toggle_checkbox()
 end

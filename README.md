@@ -41,9 +41,10 @@ The core principles are simple:
 - Insert wiki-style links with titles ([[id|Title]])
 - Follow links using `gf` (also supports preview of images)
 - Preview link content using `K`
-- Search by title with Telescope (<leader>zt)
-- Define views for virtually group notes of similar type (<leader>zv)
+- Search by title with Telescope (<leader>zs)
 - Full-text search with Telescope (<leader>zf)
+- Search based on available tags (<leader>zt)
+- Define views for virtually group notes of similar type (<leader>zv)
 - Extract selection to new note (visual mode, <leader>ze)
 - Capture a screenshot and add the image to the note (MacOS only!)
 - Create a new note from the current buffer (<leader>za)

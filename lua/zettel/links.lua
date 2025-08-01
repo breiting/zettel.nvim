@@ -99,13 +99,17 @@ end
 ---@param note_id string The ID for the new note
 function M.create_note_from_link(note_id)
 	local vault_dir = config.get_vault_dir()
-	local filename = note_id .. ".md"
+
+	local id = utils.generate_id(config.date_format, config.id_random_digits)
+	local filename = id .. ".md"
 	local filepath = vault_dir .. "/" .. filename
+
+	-- Save cursor for later
+	local cursor_pos = vim.api.nvim_win_get_cursor(0) -- {row, col}
+	local current_line = vim.api.nvim_get_current_line()
 
 	-- Use the note_id as the default title (can be changed by user)
 	local title = note_id:gsub("-", " "):gsub("_", " ")
-
-	-- Capitalize first letter of each word
 	title = title:gsub("(%w)(%w*)", function(first, rest)
 		return first:upper() .. rest:lower()
 	end)
@@ -116,19 +120,28 @@ function M.create_note_from_link(note_id)
 		vim.ui.select(config.get_note_types(), { prompt = "Note Type:" }, function(choice)
 			local note_type = choice or "note"
 
-			-- Create template
-			local template = utils.create_frontmatter_template(note_id, final_title, note_type)
+			-- Template erstellen
+			local template = utils.create_frontmatter_template(id, final_title, note_type)
 
-			-- Create and open the file
+			-- Link ersetzen im gespeicherten Line-String
+			local new_link = string.format("[[%s|%s]]", id, final_title)
+			local new_line = current_line:gsub("%[%[%s*" .. vim.pesc(note_id) .. "%s*%]%]", new_link, 1)
+
+			-- Alte Zeile updaten
+			vim.api.nvim_set_current_line(new_line)
+			vim.api.nvim_win_set_cursor(0, cursor_pos)
+
+			-- Neue Datei erstellen
 			vim.cmd("edit " .. filepath)
 			vim.api.nvim_buf_set_lines(0, 0, -1, false, template)
 			vim.cmd("write")
 
-			-- Position cursor at the end
+			-- Cursor ans Ende setzen
 			local lastline = vim.api.nvim_buf_line_count(0)
 			vim.api.nvim_win_set_cursor(0, { lastline, 0 })
 
 			vim.notify("Created new note: " .. final_title, vim.log.levels.INFO)
+			return id
 		end)
 	end)
 end
